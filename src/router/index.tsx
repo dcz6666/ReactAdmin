@@ -1,17 +1,30 @@
-import App from "../App";
-import Home from "../views/Home";
-import About from "../views/About";
-import { BrowserRouter, Routes, Route,Navigate } from "react-router-dom";
+import React from 'react';
+import { lazy } from 'react'
+import Home from "../views/Home"
+// import About from "../views/About" 
+const About = lazy(()=>import('../views/About'))
+// Navigate 重定向组件 
+import {Navigate} from "react-router-dom" 
 
-const baseRouter = () => (
-  <BrowserRouter>
-    <Routes>
-        <Route path="/" element={<App/>}>
-            <Route path='/' element={<Navigate to='/home'/>}></Route>
-            <Route path='/home' element={<Home/>}></Route>
-            <Route path='/about' element={<About/>}></Route>
-        </Route>
-    </Routes>
-  </BrowserRouter>
-);
-export default baseRouter
+const withLoadingComponent = (comp:JSX.Element)=>{
+    return <React.Suspense fallback={<div>Loading...</div>}>
+      {comp}
+    </React.Suspense> 
+  }
+const routes = [ 
+  {  
+    path:"/", //重定向到home
+    element:<Navigate to="/home" />,
+  },
+  { 
+    path:"/home", 
+    element:<Home/>, 
+  },
+  { 
+     path:"/about",
+     element:withLoadingComponent(<About/>), 
+  }// { path: "*", element: <Navigate to="/" /> },
+]
+export default routes
+
+
